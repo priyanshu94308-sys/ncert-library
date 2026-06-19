@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NCERT पुस्तकालय — कक्षा 6 से 12</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Hind:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:    #0f172a;
+    --page:   #f8f7f2;
+    --accent: #e65c00;
+    --gold:   #f5a623;
+    --muted:  #64748b;
+    --card:   #ffffff;
+    --border: #e2e0d8;
+    --green:  #16a34a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Hind', sans-serif; background: var(--page); color: var(--ink); min-height: 100vh; }
+  header {
+    background: var(--ink); padding: 0 1.5rem; position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between; height: 60px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  }
+  .logo { font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 1.4rem; color: #fff; }
+  .logo span { color: var(--gold); }
+  .header-badge { background: var(--accent); color: #fff; font-size: 0.7rem; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
+  .hero {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #0f2942 100%);
+    color: #fff; text-align: center; padding: 3rem 1.5rem 2.5rem; position: relative; overflow: hidden;
+  }
+  .hero::before { content: '📚'; position: absolute; font-size: 10rem; opacity: 0.04; top: -1rem; right: -2rem; transform: rotate(15deg); }
+  .hero h1 { font-family: 'Baloo 2', cursive; font-size: clamp(1.6rem,5vw,2.8rem); font-weight: 800; line-height: 1.2; margin-bottom: 0.5rem; }
+  .hero h1 em { color: var(--gold); font-style: normal; }
+  .hero p { color: #94a3b8; font-size: 0.95rem; margin-bottom: 1.5rem; }
+  .search-wrap { max-width: 480px; margin: 0 auto; position: relative; }
+  .search-wrap input {
+    width: 100%; padding: 0.8rem 1rem 0.8rem 2.8rem; border-radius: 12px; border: none;
+    font-size: 0.95rem; font-family: 'Hind', sans-serif;
+    background: rgba(255,255,255,0.1); color: #fff; backdrop-filter: blur(8px); outline: none;
+  }
+  .search-wrap input::placeholder { color: #94a3b8; }
+  .search-wrap input:focus { background: rgba(255,255,255,0.18); }
+  .search-icon { position: absolute; left: 0.9rem; top: 50%; transform: translateY(-50%); pointer-events: none; }
+  .filters {
+    padding: 1.2rem 1.5rem 0.5rem; display: flex; gap: 0.5rem;
+    overflow-x: auto; scrollbar-width: none;
+  }
+  .filters::-webkit-scrollbar { display: none; }
+  .filter-label { font-size: 0.75rem; color: var(--muted); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; white-space: nowrap; align-self: center; margin-right: 0.25rem; }
+  .chip { padding: 0.4rem 1rem; border-radius: 20px; border: 1.5px solid var(--border); background: var(--card); font-size: 0.82rem; font-family: 'Hind', sans-serif; font-weight: 600; cursor: pointer; white-space: nowrap; color: var(--muted); transition: all 0.15s; }
+  .chip:hover { border-color: var(--accent); color: var(--accent); }
+  .chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .main { display: grid; grid-template-columns: 240px 1fr; gap: 0; max-width: 1200px; margin: 1rem auto; padding: 0 1rem; }
+  @media(max-width:768px){ .main{grid-template-columns:1fr;} .sidebar{display:none;} }
+  .sidebar { padding: 0.5rem 1rem 1rem 0; }
+  .sidebar-title { font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; padding-left: 0.25rem; }
+  .subject-btn { display: flex; align-items: center; gap: 0.6rem; width: 100%; padding: 0.55rem 0.75rem; border-radius: 8px; border: none; background: transparent; font-family: 'Hind', sans-serif; font-size: 0.88rem; color: var(--ink); cursor: pointer; text-align: left; transition: background 0.15s; margin-bottom: 2px; }
+  .subject-btn:hover { background: var(--border); }
+  .subject-btn.active { background: #fff3ec; color: var(--accent); font-weight: 600; }
+  .content { padding-bottom: 2rem; }
+  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; padding: 0.25rem 0; }
+  .section-title { font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 700; }
+  .count-badge { font-size: 0.72rem; background: var(--border); color: var(--muted); padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+  .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 0.75rem; margin-bottom: 2rem; }
+  .book-card { background: var(--card); border: 1.5px solid var(--border); border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s; }
+  .book-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); border-color: var(--accent); }
+  .book-thumb { height: 80px; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; position: relative; }
+  .ready-badge { position: absolute; top: 6px; right: 6px; font-size: 0.58rem; color: #fff; padding: 2px 5px; border-radius: 8px; font-weight: 700; }
+  .book-info { padding: 0.5rem 0.7rem 0.65rem; }
+  .book-subject { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 2px; }
+  .book-name { font-size: 0.8rem; font-weight: 600; color: var(--ink); line-height: 1.3; margin-bottom: 0.4rem; }
+  .book-actions { display: flex; gap: 0.35rem; }
+  .btn-read { flex: 1; padding: 0.32rem 0; background: var(--accent); color: #fff; border: none; border-radius: 6px; font-size: 0.7rem; font-family: 'Hind', sans-serif; font-weight: 600; cursor: pointer; }
+  .btn-read:hover { background: #c44e00; }
+  .btn-dl { padding: 0.32rem 0.45rem; background: var(--page); color: var(--muted); border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.7rem; cursor: pointer; text-decoration: none; display:inline-flex; align-items:center; }
+  .btn-dl:hover { border-color: var(--green); color: var(--green); }
+  /* MODAL */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 200; backdrop-filter: blur(4px); }
+  .modal-overlay.open { display: flex; align-items: center; justify-content: center; }
+  .modal { background: var(--card); border-radius: 16px; width: 95vw; max-width: 920px; height: 92vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 24px 64px rgba(0,0,0,0.4); }
+  .modal-header { background: var(--ink); color: #fff; padding: 0.75rem 1.2rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-shrink: 0; }
+  .modal-title { font-family: 'Baloo 2', cursive; font-size: 1rem; font-weight: 700; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .modal-close { background: rgba(255,255,255,0.15); border: none; color: #fff; width: 32px; height: 32px; border-radius: 8px; font-size: 1.1rem; cursor: pointer; flex-shrink: 0; }
+  .modal-close:hover { background: rgba(255,255,255,0.25); }
+  .modal-toolbar { padding: 0.55rem 1.2rem; border-bottom: 1px solid var(--border); display: flex; gap: 0.5rem; align-items: center; flex-shrink: 0; flex-wrap: wrap; }
+  .toolbar-btn { padding: 0.32rem 0.85rem; border-radius: 6px; border: 1.5px solid var(--border); background: var(--page); font-family: 'Hind', sans-serif; font-size: 0.78rem; font-weight: 600; cursor: pointer; color: var(--ink); text-decoration: none; display: inline-flex; align-items: center; gap: 0.3rem; }
+  .toolbar-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .toolbar-btn.green { background: var(--green); border-color: var(--green); color: #fff; }
+  .pdf-frame { flex: 1; width: 100%; border: none; background: #525659; }
+  .empty { text-align: center; padding: 3rem 1rem; color: var(--muted); }
+  .empty .e-icon { font-size: 3rem; margin-bottom: 0.5rem; }
+  .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--ink); color: #fff; padding: 0.6rem 1.2rem; border-radius: 10px; font-size: 0.85rem; font-weight: 600; z-index: 999; transition: transform 0.3s; pointer-events: none; }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .info-bar { background: #f0fdf4; border: 1.5px solid #bbf7d0; border-radius: 10px; padding: 0.75rem 1rem; margin-bottom: 1.2rem; font-size: 0.82rem; color: #166534; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">📚 NCERT <span>पुस्तकालय</span></div>
+  <div class="header-badge">Official Links • Free</div>
+</header>
+
+<div class="hero">
+  <h1>पढ़ो बिना <em>रुकावट</em> के</h1>
+  <p>कक्षा 6–12 • NCERT Official PDF • No Ads • No Redirect</p>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="किताब या विषय खोजें..." oninput="render()">
+  </div>
+</div>
+
+<div class="filters">
+  <span class="filter-label">कक्षा:</span>
+  <button class="chip active" onclick="filterClass('all',this)">सभी</button>
+  <button class="chip" onclick="filterClass('6',this)">6</button>
+  <button class="chip" onclick="filterClass('7',this)">7</button>
+  <button class="chip" onclick="filterClass('8',this)">8</button>
+  <button class="chip" onclick="filterClass('9',this)">9</button>
+  <button class="chip" onclick="filterClass('10',this)">10</button>
+  <button class="chip" onclick="filterClass('11',this)">11</button>
+  <button class="chip" onclick="filterClass('12',this)">12</button>
+</div>
+
+<div class="main">
+  <div class="sidebar">
+    <div class="sidebar-title">विषय</div>
+    <button class="subject-btn active" onclick="filterSubject('all',this)">📚 सभी</button>
+    <button class="subject-btn" onclick="filterSubject('Maths',this)">📐 गणित</button>
+    <button class="subject-btn" onclick="filterSubject('Science',this)">🔬 विज्ञान</button>
+    <button class="subject-btn" onclick="filterSubject('Hindi',this)">📖 हिंदी</button>
+    <button class="subject-btn" onclick="filterSubject('English',this)">🔤 English</button>
+    <button class="subject-btn" onclick="filterSubject('Social',this)">🌍 सामाजिक विज्ञान</button>
+    <button class="subject-btn" onclick="filterSubject('Physics',this)">⚡ भौतिकी</button>
+    <button class="subject-btn" onclick="filterSubject('Chemistry',this)">🧪 रसायन</button>
+    <button class="subject-btn" onclick="filterSubject('Biology',this)">🌿 जीव विज्ञान</button>
+    <button class="subject-btn" onclick="filterSubject('History',this)">📜 इतिहास</button>
+    <button class="subject-btn" onclick="filterSubject('Geography',this)">🗺️ भूगोल</button>
+    <button class="subject-btn" onclick="filterSubject('Economics',this)">💰 अर्थशास्त्र</button>
+    <button class="subject-btn" onclick="filterSubject('Polity',this)">⚖️ राजनीति</button>
+  </div>
+
+  <div class="content">
+    <div class="info-bar">✅ सभी किताबें NCERT Official Server से सीधे खुलती हैं — कोई Ads नहीं, कोई Redirect नहीं!</div>
+    <div id="booksContainer"></div>
+  </div>
+</div>
+
+<!-- PDF MODAL -->
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle"></div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-toolbar">
+      <a id="btnNewTab" href="#" target="_blank" class="toolbar-btn">🔗 नई Tab में खोलें</a>
+      <a id="btnDownload" href="#" download class="toolbar-btn green">⬇ Download करें</a>
+    </div>
+    <iframe class="pdf-frame" id="pdfFrame" src="" allowfullscreen></iframe>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── NCERT DIRECT PDF LINKS ──
+// URL Pattern: https://ncert.nic.in/textbook/pdf/[CODE].pdf
+// Codes: first letter = class, next 2-3 = subject code, rest = chapter
+
+const books = [
+  // ─── CLASS 6 (New 2025-26 syllabus) ───
+  { id:'6-maths',   cls:'6',  subj:'Maths',    emoji:'📐', bg:'#dbeafe', ac:'#2563eb', name:'Ganita Prakash',            url:'https://ncert.nic.in/textbook/pdf/fgmt1dd.pdf' },
+  { id:'6-sci',     cls:'6',  subj:'Science',  emoji:'🔬', bg:'#dcfce7', ac:'#16a34a', name:'Curiosity (Science)',        url:'https://ncert.nic.in/textbook/pdf/fgsc1dd.pdf' },
+  { id:'6-hindi',   cls:'6',  subj:'Hindi',    emoji:'📖', bg:'#fce7f3', ac:'#db2777', name:'Malhar (हिंदी)',             url:'https://ncert.nic.in/textbook/pdf/fhhd1dd.pdf' },
+  { id:'6-eng',     cls:'6',  subj:'English',  emoji:'🔤', bg:'#fef9c3', ac:'#ca8a04', name:'Poorvi (English)',           url:'https://ncert.nic.in/textbook/pdf/fgep1dd.pdf' },
+  { id:'6-sst',     cls:'6',  subj:'Social',   emoji:'🌍', bg:'#ffe4e6', ac:'#e11d48', name:'Exploring Society',          url:'https://ncert.nic.in/textbook/pdf/fgss1dd.pdf' },
+  { id:'6-sanskrit',cls:'6',  subj:'Sanskrit', emoji:'🕉️', bg:'#f3e8ff', ac:'#7c3aed', name:'Deepakam (Sanskrit)',        url:'https://ncert.nic.in/textbook/pdf/fgsk1dd.pdf' },
+
+  // ─── CLASS 7 (New 2025-26) ───
+  { id:'7-maths',   cls:'7',  subj:'Maths',    emoji:'📐', bg:'#dbeafe', ac:'#2563eb', name:'Ganita Prakash 2',           url:'https://ncert.nic.in/textbook/pdf/ggmt1dd.pdf' },
+  { id:'7-sci',     cls:'7',  subj:'Science',  emoji:'🔬', bg:'#dcfce7', ac:'#16a34a', name:'Curiosity 2',                url:'https://ncert.nic.in/textbook/pdf/ggsc1dd.pdf' },
+  { id:'7-hindi',   cls:'7',  subj:'Hindi',    emoji:'📖', bg:'#fce7f3', ac:'#db2777', name:'Malhar 2 (हिंदी)',           url:'https://ncert.nic.in/textbook/pdf/ghhd1dd.pdf' },
+  { id:'7-eng',     cls:'7',  subj:'English',  emoji:'🔤', bg:'#fef9c3', ac:'#ca8a04', name:'Poorvi 2 (English)',         url:'https://ncert.nic.in/textbook/pdf/ggep1dd.pdf' },
+  { id:'7-sst',     cls:'7',  subj:'Social',   emoji:'🌍', bg:'#ffe4e6', ac:'#e11d48', name:'Exploring Society 2',        url:'https://ncert.nic.in/textbook/pdf/ggss1dd.pdf' },
+
+  // ─── CLASS 8 ───
+  { id:'8-maths',   cls:'8',  subj:'Maths',    emoji:'📐', bg:'#dbeafe', ac:'#2563eb', name:'Mathematics',               url:'https://ncert.nic.in/textbook/pdf/hemh1dd.pdf' },
+  { id:'8-sci',     cls:'8',  subj:'Science',  emoji:'🔬', bg:'#dcfce7', ac:'#16a34a', name:'Science',                   url:'https://ncert.nic.in/textbook/pdf/hesc1dd.pdf' },
+  { id:'8-hindi',   cls:'8',  subj:'Hindi',    emoji:'📖', bg:'#fce7f3', ac:'#db2777', name:'Vasant Bhag 3',             url:'https://ncert.nic.in/textbook/pdf/hhvs1dd.pdf' },
+  { id:'8-eng',     cls:'8',  subj:'English',  emoji:'🔤', bg:'#fef9c3', ac:'#ca8a04', name:'Honeydew',                  url:'https://ncert.nic.in/textbook/pdf/hehl1dd.pdf' },
+  { id:'8-hist',    cls:'8',  subj:'History',  emoji:'📜', bg:'#f3e8ff', ac:'#7c3aed', name:'Hamare Ateet 3',            url:'https://ncert.nic.in/textbook/pdf/hhss1dd.pdf' },
+  { id:'8-geo',     cls:'8',  subj:'Geography',emoji:'🗺️', bg:'#ecfdf5', ac:'#059669', name:'Sansadhan aur Vikas',       url:'https://ncert.nic.in/textbook/pdf/hess1dd.pdf' },
+
+  // ─── CLASS 9 ───
+  { id:'9-maths',   cls:'9',  subj:'Maths',    emoji:'📐', bg:'#dbeafe', ac:'#2563eb', name:'Mathematics',               url:'https://ncert.nic.in/textbook/pdf/iemh1dd.pdf' },
+  { id:'9-sci',     cls:'9',  subj:'Science',  emoji:'🔬', bg:'#dcfce7', ac:'#16a34a', name:'Science',                   url:'https://ncert.nic.in/textbook/pdf/iesc1dd.pdf' },
+  { id:'9-hindi-a', cls:'9',  subj:'Hindi',    emoji:'📖', bg:'#fce7f3', ac:'#db2777', name:'Kshitij Bhag 1',            url:'https://ncert.nic.in/textbook/pdf/ihkv1dd.pdf' },
+  { id:'9-hindi-b', cls:'9',  subj:'Hindi',    emoji:'📖', bg:'#fce7f3', ac:'#db2777', name:'Sparsh Bhag 1',             url:'https://ncert.nic.in/textbook/pdf/ihsp1dd.pdf' },
+  { id:'9-eng',     cls:'9',  subj:'English',  emoji:'🔤', bg:'#fef9c3', ac:'#ca8a04', name:'Beehive',                   url:'https://ncert.nic.in/textbook/pdf/iehl1dd.pdf' },
+  { id:'9-hist',    cls:'9',  subj:'History',  emoji:'📜', bg:'#f3e8ff', ac:'#7c3aed', name:'Bharat aur Vishwa',         url:'https://ncert.nic.in/textbook/pdf/iess1dd.pdf' },
+  { id:'9-geo',     cls:'9',  subj:'Geography',emoji:'🗺️', bg:'#ecfdf5', ac:'#059669', name:'Samkaleen Bharat 1',        url:'https://ncert.nic.in/textbook/pdf/iess2dd.pdf' },
+  { id:'9-pol',     cls:'9',  subj:'Polity',   emoji:'⚖️', bg:'#fff7ed', ac:'#ea580c', name:'Loktantrik Rajneeti 1',     url:'https://ncert.nic.in/textbook/pdf/iess3dd.pdf' },
+  { id:'9-eco',     cls:'9',  subj:'Economics',emoji:'💰', bg:'#fefce8', ac:'#a16207', name:'Arthashastra',              url:'https://ncert.nic.in/textbook/pdf/iess4dd.pdf' },
+
+  // ─── CLASS 10 ───
+  { id:'10-maths',  cls:'10', subj:'Maths',    emoji:'📐', bg:'#dbeafe', ac:'#2563eb', name:'Mathematics',               url:'https://ncert.nic.in/textbook/pdf/jemh1dd.pdf' },
+  { id:'10-sci',    cls:'10', subj:'Science',  emoji:'🔬', bg:'#dcfce7', ac:'#16a34a', name:'Science',                   url:'https://ncert.nic.in/textbook/pdf/jesc1dd.pdf' },
+  { id:'10-hindi-a',cls:'10', subj:'Hindi',    emoji:'📖', bg:'#fce7f3', ac:'#db2777', name:'Kshitij Bhag 2',            url:'https://ncert.nic.in/textbook/pdf/jhkv1dd.pdf' },
+  { id:'10-hindi-b',cls:'10', subj:'Hindi',    emoji:'📖', bg:'#fce7f3', ac:'#db2777', name:'Sparsh Bhag 2',             url:'https://ncert.nic.in/textbook/pdf/jhsp1dd.pdf' },
+  { id:'10-eng',    cls:'10', subj:'English',  emoji:'🔤', bg:'#fef9c3', ac:'#ca8a04', name:'First Flight',              url:'https://ncert.nic.in/textbook/pdf/jehl1dd.pdf' },
+  { id:'10-hist',   cls:'10', subj:'History',  emoji:'📜', bg:'#f3e8ff', ac:'#7c3aed', name:'Bharat aur Vishwa 2',       url:'https://ncert.nic.in/textbook/pdf/jess1dd.pdf' },
+  { id:'10-geo',    cls:'10', subj:'Geography',emoji:'🗺️', bg:'#ecfdf5', ac:'#059669', name:'Samkaleen Bharat 2',        url:'https://ncert.nic.in/textbook/pdf/jess2dd.pdf' },
+  { id:'10-pol',    cls:'10', subj:'Polity',   emoji:'⚖️', bg:'#fff7ed', ac:'#ea580c', name:'Loktantrik Rajneeti 2',     url:'https://ncert.nic.in/textbook/pdf/jess3dd.pdf' },
+  { id:'10-eco',    cls:'10', subj:'Economics',emoji:'💰', bg:'#fefce8', ac:'#a16207', name:'Aarthik Vikas ki Samajh',   url:'https://ncert.nic.in/textbook/pdf/jess4dd.pdf' },
+
+  // ─── CLASS 11 ───
+  { id:'11-maths1', cls:'11', subj:'Maths',    emoji:'📐', bg:'#dbeafe', ac:'#2563eb', name:'Mathematics Part 1',        url:'https://ncert.nic.in/textbook/pdf/kemh1dd.pdf' },
+  { id:'11-maths2', cls:'11', subj:'Maths',    emoji:'📐', bg:'#dbeafe', ac:'#2563eb', name:'Mathematics Part 2',        url:'https://ncert.nic.in/textbook/pdf/kemh2dd.pdf' },
+  { id:'11-phy1',   cls:'11', subj:'Physics',  emoji:'⚡', bg:'#e0f2fe', ac:'#0284c7', name:'Physics Part 1',            url:'https://ncert.nic.in/textbook/pdf/keph1dd.pdf' },
+  { id:'11-phy2',   cls:'11', subj:'Physics',  emoji:'⚡', bg:'#e0f2fe', ac:'#0284c7', name:'Physics Part 2',            url:'https://ncert.nic.in/textbook/pdf/keph2dd.pdf' },
+  { id:'11-chem1',  cls:'11', subj:'Chemistry',emoji:'🧪', bg:'#fdf4ff', ac:'#a21caf', name:'Chemistry Part 1',          url:'https://ncert.nic.in/textbook/pdf/kech1dd.pdf' },
+  { id:'11-chem2',  cls:'11', subj:'Chemistry',emoji:'🧪', bg:'#fdf4ff', ac:'#a21caf', name:'Chemistry Part 2',          url:'https://ncert.nic.in/textbook/pdf/kech2dd.pdf' },
+  { id:'11-bio',    cls:'11', subj:'Biology',  emoji:'🌿', bg:'#f0fdf4', ac:'#15803d', name:'Biology',                   url:'https://ncert.nic.in/textbook/pdf/kebo1dd.pdf' },
+  { id:'11-hindi',  cls:'11', subj:'Hindi',    emoji:'📖', bg:'#fce7f3', ac:'#db2777', name:'Aroh Bhag 1',               url:'https://ncert.nic.in/textbook/pdf/khhr1dd.pdf' },
+  { id:'11-eng',    cls:'11', subj:'English',  emoji:'🔤', bg:'#fef9c3', ac:'#ca8a04', name:'Hornbill',                  url:'https://ncert.nic.in/textbook/pdf/kehl1dd.pdf' },
+  { id:'11-hist',   cls:'11', subj:'History',  emoji:'📜', bg:'#f3e8ff', ac:'#7c3aed', name:'Vishwa Itihas ke Kuch Vishay',url:'https://ncert.nic.in/textbook/pdf/khih1dd.pdf' },
+  { id:'11-geo1',   cls:'11', subj:'Geography',emoji:'🗺️', bg:'#ecfdf5', ac:'#059669', name:'Bhautik Bhoogol (Part 1)',  url:'https://ncert.nic.in/textbook/pdf/khgg1dd.pdf' },
+  { id:'11-geo2',   cls:'11', subj:'Geography',emoji:'🗺️', bg:'#ecfdf5', ac:'#059669', name:'India: Bhautik Parivesh',   url:'https://ncert.nic.in/textbook/pdf/khgg2dd.pdf' },
+  { id:'11-eco',    cls:'11', subj:'Economics',emoji:'💰', bg:'#fefce8', ac:'#a16207', name:'Indian Economic Dev.',       url:'https://ncert.nic.in/textbook/pdf/keec1dd.pdf' },
+  { id:'11-pol',    cls:'11', subj:'Polity',   emoji:'⚖️', bg:'#fff7ed', ac:'#ea580c', name:'Rajnitik Siddhant',         url:'https://ncert.nic.in/textbook/pdf/khps1dd.pdf' },
+
+  // ─── CLASS 12 ───
+  { id:'12-maths1', cls:'12', subj:'Maths',    emoji:'📐', bg:'#dbeafe', ac:'#2563eb', name:'Mathematics Part 1',        url:'https://ncert.nic.in/textbook/pdf/lemh1dd.pdf' },
+  { id:'12-maths2', cls:'12', subj:'Maths',    emoji:'📐', bg:'#dbeafe', ac:'#2563eb', name:'Mathematics Part 2',        url:'https://ncert.nic.in/textbook/pdf/lemh2dd.pdf' },
+  { id:'12-phy1',   cls:'12', subj:'Physics',  emoji:'⚡', bg:'#e0f2fe', ac:'#0284c7', name:'Physics Part 1',            url:'https://ncert.nic.in/textbook/pdf/leph1dd.pdf' },
+  { id:'12-phy2',   cls:'12', subj:'Physics',  emoji:'⚡', bg:'#e0f2fe', ac:'#0284c7', name:'Physics Part 2',            url:'https://ncert.nic.in/textbook/pdf/leph2dd.pdf' },
+  { id:'12-chem1',  cls:'12', subj:'Chemistry',emoji:'🧪', bg:'#fdf4ff', ac:'#a21caf', name:'Chemistry Part 1',          url:'https://ncert.nic.in/textbook/pdf/lech1dd.pdf' },
+  { id:'12-chem2',  cls:'12', subj:'Chemistry',emoji:'🧪', bg:'#fdf4ff', ac:'#a21caf', name:'Chemistry Part 2',          url:'https://ncert.nic.in/textbook/pdf/lech2dd.pdf' },
+  { id:'12-bio',    cls:'12', subj:'Biology',  emoji:'🌿', bg:'#f0fdf4', ac:'#15803d', name:'Biology',                   url:'https://ncert.nic.in/textbook/pdf/lebo1dd.pdf' },
+  { id:'12-hindi',  cls:'12', subj:'Hindi',    emoji:'📖', bg:'#fce7f3', ac:'#db2777', name:'Aroh Bhag 2',               url:'https://ncert.nic.in/textbook/pdf/lhhr1dd.pdf' },
+  { id:'12-eng',    cls:'12', subj:'English',  emoji:'🔤', bg:'#fef9c3', ac:'#ca8a04', name:'Flamingo',                  url:'https://ncert.nic.in/textbook/pdf/lehl1dd.pdf' },
+  { id:'12-hist1',  cls:'12', subj:'History',  emoji:'📜', bg:'#f3e8ff', ac:'#7c3aed', name:'Themes in History Part 1',  url:'https://ncert.nic.in/textbook/pdf/lhih1dd.pdf' },
+  { id:'12-hist2',  cls:'12', subj:'History',  emoji:'📜', bg:'#f3e8ff', ac:'#7c3aed', name:'Themes in History Part 2',  url:'https://ncert.nic.in/textbook/pdf/lhih2dd.pdf' },
+  { id:'12-hist3',  cls:'12', subj:'History',  emoji:'📜', bg:'#f3e8ff', ac:'#7c3aed', name:'Themes in History Part 3',  url:'https://ncert.nic.in/textbook/pdf/lhih3dd.pdf' },
+  { id:'12-geo1',   cls:'12', subj:'Geography',emoji:'🗺️', bg:'#ecfdf5', ac:'#059669', name:'Manav Bhoogol (Part 1)',    url:'https://ncert.nic.in/textbook/pdf/lhgg1dd.pdf' },
+  { id:'12-geo2',   cls:'12', subj:'Geography',emoji:'🗺️', bg:'#ecfdf5', ac:'#059669', name:'India: Log aur Arthvyavastha',url:'https://ncert.nic.in/textbook/pdf/lhgg2dd.pdf' },
+  { id:'12-eco1',   cls:'12', subj:'Economics',emoji:'💰', bg:'#fefce8', ac:'#a16207', name:'Vyashti Arthshastra',       url:'https://ncert.nic.in/textbook/pdf/leec1dd.pdf' },
+  { id:'12-eco2',   cls:'12', subj:'Economics',emoji:'💰', bg:'#fefce8', ac:'#a16207', name:'Samashti Arthshastra',      url:'https://ncert.nic.in/textbook/pdf/leec2dd.pdf' },
+  { id:'12-pol1',   cls:'12', subj:'Polity',   emoji:'⚖️', bg:'#fff7ed', ac:'#ea580c', name:'Swatantra Bharat mein Rajneeti',url:'https://ncert.nic.in/textbook/pdf/lhps1dd.pdf' },
+  { id:'12-pol2',   cls:'12', subj:'Polity',   emoji:'⚖️', bg:'#fff7ed', ac:'#ea580c', name:'Samkaleen Vishwa Rajneeti', url:'https://ncert.nic.in/textbook/pdf/lhps2dd.pdf' },
+];
+
+let activeClass = 'all', activeSubject = 'all';
+
+function render() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const c = document.getElementById('booksContainer');
+  const filtered = books.filter(b =>
+    (activeClass==='all' || b.cls===activeClass) &&
+    (activeSubject==='all' || b.subj===activeSubject) &&
+    (!q || b.name.toLowerCase().includes(q) || b.subj.toLowerCase().includes(q) || b.cls.includes(q))
+  );
+  if (!filtered.length) { c.innerHTML=`<div class="empty"><div class="e-icon">📭</div><p>कोई किताब नहीं मिली</p></div>`; return; }
+  const groups={};
+  filtered.forEach(b=>{ if(!groups[b.cls]) groups[b.cls]=[]; groups[b.cls].push(b); });
+  c.innerHTML = Object.keys(groups).sort((a,b)=>+a-+b).map(cls=>`
+    <div class="section-header">
+      <div class="section-title">कक्षा ${cls}</div>
+      <div class="count-badge">${groups[cls].length} किताबें</div>
+    </div>
+    <div class="book-grid">${groups[cls].map(bookCard).join('')}</div>
+  `).join('');
+}
+
+function bookCard(b) {
+  return `
+  <div class="book-card" onclick="openBook('${b.id}')">
+    <div class="book-thumb" style="background:${b.bg}">
+      ${b.emoji}
+      <span class="ready-badge" style="background:${b.ac}">✓ Ready</span>
+    </div>
+    <div class="book-info">
+      <div class="book-subject" style="color:${b.ac}">${b.subj}</div>
+      <div class="book-name">${b.name}</div>
+      <div class="book-actions">
+        <button class="btn-read" onclick="event.stopPropagation();openBook('${b.id}')">📖 पढ़ें</button>
+        <a class="btn-dl" href="${b.url}" target="_blank" onclick="event.stopPropagation()" title="Download">⬇</a>
+      </div>
+    </div>
+  </div>`;
+}
+
+function openBook(id) {
+  const b = books.find(x=>x.id===id);
+  document.getElementById('modalTitle').textContent = `कक्षा ${b.cls} — ${b.name}`;
+  // NCERT PDF direct embed via Google Docs viewer (avoids CORS issues)
+  const viewUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(b.url)}&embedded=true`;
+  document.getElementById('pdfFrame').src = viewUrl;
+  document.getElementById('btnNewTab').href = b.url;
+  document.getElementById('btnDownload').href = b.url;
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.getElementById('pdfFrame').src = '';
+  document.body.style.overflow = '';
+}
+
+function filterClass(cls, el) {
+  activeClass = cls;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active'); render();
+}
+function filterSubject(s, el) {
+  activeSubject = s;
+  document.querySelectorAll('.subject-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active'); render();
+}
+
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
+render();
+</script>
+</body>
+</html>
